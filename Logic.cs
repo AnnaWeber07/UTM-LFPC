@@ -28,7 +28,7 @@ namespace LFPC_lab1
             var vnElements = GetVElements(vnDataString);
             var vtElements = GetVElements(vtDataString);
 
-            var array = new char[vnElements.Count(), vtElements.Count()];
+            var array = new char[vnElements.Count() + 1, vtElements.Count() + 1];
 
             for (var i = 3; i < dataFromFile.Length; i++)
             {
@@ -37,7 +37,15 @@ namespace LFPC_lab1
                 var x = GetCellIdx(vnElements, objEdgeDest.obj);
                 var y = GetCellIdx(vtElements, objEdgeDest.edge);
 
-                array[x, y] = objEdgeDest.destination;
+                for (var a = 0; a < vnElements.Length; a++)
+                {
+                    array[a + 1, 0] = vnElements[a];
+
+                    for (var b = 0; b < vtElements.Length; b++)
+                        array[0, b + 1] = vtElements[b];
+                }
+
+                array[x + 1, y + 1] = objEdgeDest.destination;
             }
 
             FillEmptyCells(array);
