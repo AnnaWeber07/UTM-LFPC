@@ -6,39 +6,20 @@ using System.Threading.Tasks;
 
 namespace LFPC_lab1
 {
-    class ConvertToInput
+    static class ConvertToInput
     {
-        public int GetNumberOfVertices(string grammar)
+        static public int GetNumberOfVertices(string[] lines)
         {
-            string result = grammar.Substring(grammar.IndexOf('{'), grammar.IndexOf('}'));
-            int frequency = result.Where(x => char.IsLetter(x)).Count();
-
-            return frequency;
-        }
-
-        public int GetNumberOfEdges(string grammar)
-        {
-            int frequency = grammar.Count(f => f == '=');
-            return frequency - 3;
+            int frequency = lines.ElementAt(1).Where(x => char.IsLetter(x)).Count();
+            return frequency - 2;
         }
 
 
-        //split the string by lines
-
-        public String ReturnTheString(string grammar)
+        static public int GetNumberOfEdges(string[] lines)
         {
-            string result;
-
-            return result;
+            int frequency = lines.ElementAt(1).Where(x => char.IsLetter(x)).Count();
+            return frequency - 2;
         }
-
-
-        //public string Converter(String grammar)
-        //{
-        //    string conv = grammar;
-        //    string input;
-        //    //creating array of string length
-        //    char[] ch = new char[conv.Length];
 
 
         //var splitted = text
