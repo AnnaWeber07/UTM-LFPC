@@ -55,8 +55,16 @@ namespace _4Weber
 
                 var x = GetCellIdx(vnElements, objEdgeDest.obj);
                 var y = GetCellIdx(vtElements, objEdgeDest.edge);
+                
+                for (var a = 0; a < vnElements.Length; a++)
+                {
+                    array[a + 1, 0] = vnElements[a];
 
-                array[x, y] = objEdgeDest.destination;
+                    for (var b = 0; b < vtElements.Length; b++)
+                        array[0, b + 1] = vtElements[b];
+                }
+
+                array[x + 1, y + 1] = objEdgeDest.destination;
             }
 
             FillEmptyCells(array);
