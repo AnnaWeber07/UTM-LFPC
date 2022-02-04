@@ -19,8 +19,8 @@ namespace LFPC_lab1
 
             string[] lines = File.ReadAllLines(fileName);
 
-            int vertices = ConvertToInput.GetNumberOfVertices(lines); //get the number of vertices
-            int edges = ConvertToInput.GetNumberOfEdges(lines);
+            int vertices = Logic.GetNumberOfVertices(lines); //get the number of vertices
+            int edges = Logic.GetNumberOfEdges(lines);
 
             Console.WriteLine("LFPC LAB 1 CHIRICIUC ANNA");
             Console.WriteLine("Analysis of data:");
@@ -37,13 +37,19 @@ namespace LFPC_lab1
             Console.Write("Number of terminal symbols: ");
             Console.WriteLine(edges);
 
-            char[,] AdjacencyMatrix = new char[vertices + 1, edges + 1];
+            var inputList = lines.ToList();
 
+            var array = Logic.GetArray(inputList.ToArray());
 
-            //String[] input = Console.ReadLine().Split(' ');
-            //var splitted = text
-            //    .Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries)
-            //    .Select(part => part.Split(new[] { "=>" }, StringSplitOptions.RemoveEmptyEntries));
+            for (var i = 0; i < array.GetLength(0); i++)
+            {
+                for (var j = 0; j < array.GetLength(1); j++)
+                {
+                    Console.Write(array[i, j] + " ");
+                }
+
+                Console.WriteLine();
+            }
 
             Console.ReadKey();
         }
