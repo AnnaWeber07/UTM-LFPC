@@ -18,10 +18,7 @@ namespace LFPC_lab1
             string fileName = @"C:\Users\Анна\source\repos\LFPC_lab1\LFPC_lab1\var.txt";
 
             string[] lines = File.ReadAllLines(fileName);
-
-            int vertices = Logic.GetNumberOfVertices(lines); //get the number of vertices
-            int edges = Logic.GetNumberOfEdges(lines);
-
+            
             Console.WriteLine("LFPC LAB 1 CHIRICIUC ANNA");
             Console.WriteLine("Analysis of data:");
             Console.WriteLine();
@@ -31,15 +28,14 @@ namespace LFPC_lab1
                 Console.WriteLine(line);
             }
 
+           
             Console.WriteLine();
-            Console.Write("Number of nonterminal symbols: ");
-            Console.WriteLine(vertices);
-            Console.Write("Number of terminal symbols: ");
-            Console.WriteLine(edges);
-
+            
             var inputList = lines.ToList();
 
             var array = Logic.GetArray(inputList.ToArray());
+
+                
 
             for (var i = 0; i < array.GetLength(0); i++)
             {
@@ -50,6 +46,12 @@ namespace LFPC_lab1
 
                 Console.WriteLine();
             }
+
+            Console.WriteLine();
+            Console.WriteLine("Enter string: ");
+            string input = Console.ReadLine();
+
+            Console.WriteLine(Logic.CheckForString(array, input));
 
             Console.ReadKey();
         }
