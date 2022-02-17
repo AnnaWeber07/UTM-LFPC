@@ -85,6 +85,17 @@ namespace LFPC_lab1
             stringArray[4, 2] = openWith["B"];
             stringArray[4, 4] = openWith["Q"];
 
+            for (int i = 0; i < stringArray.GetLength(0); i++)
+            {
+                for (int j = 0; j < stringArray.GetLength(1); j++)
+                {
+                    if (stringArray[i, j].Length != 2)
+                    {
+                        string x = String.Format(" {0}", stringArray[i, j]);
+                        stringArray[i, j] = x;
+                    }
+                }
+            }
 
             return stringArray;
         }
