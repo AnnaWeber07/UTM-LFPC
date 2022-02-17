@@ -48,7 +48,7 @@ namespace LFPC_lab1
 
         public static string[,] CopyArray(char[,] matrix, string[] dataFromFile)
         {
-            Dictionary<char, string> openWith = new Dictionary<char, string>();
+            Dictionary<string, string> openWith = new Dictionary<string, string>();
 
             var vnDataString = GetVDataString(dataFromFile[0]);
             var vtDataString = GetVDataString(dataFromFile[1]);
@@ -70,11 +70,20 @@ namespace LFPC_lab1
             for (int i = 0; i < vnElements.Length; i++) //mapping of elements
             {
                 string j = String.Format("q{0}", i);
-                char c = vnElements[i];
+                string c = String.Format("{0}", vnElements[i]);
                 openWith.Add(c, j);
             }
 
-
+            stringArray[1, 0] = openWith["S"];
+            stringArray[1, 1] = openWith["B"];
+            stringArray[1, 2] = openWith["B"];
+            stringArray[2, 0] = openWith["B"];
+            stringArray[2, 3] = openWith["D"];
+            stringArray[3, 0] = openWith["D"];
+            stringArray[3, 4] = openWith["Q"];
+            stringArray[4, 0] = openWith["Q"];
+            stringArray[4, 2] = openWith["B"];
+            stringArray[4, 4] = openWith["Q"];
 
 
             return stringArray;
