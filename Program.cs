@@ -18,7 +18,7 @@ namespace LFPC_lab1
             string fileName = @"C:\Users\Анна\source\repos\LFPC_lab1\LFPC_lab1\var.txt";
 
             string[] lines = File.ReadAllLines(fileName);
-            
+
             Console.WriteLine("LFPC LAB 1 CHIRICIUC ANNA");
             Console.WriteLine("Analysis of data:");
             Console.WriteLine();
@@ -28,30 +28,33 @@ namespace LFPC_lab1
                 Console.WriteLine(line);
             }
 
-           
+
             Console.WriteLine();
-            
+
             var inputList = lines.ToList();
 
             var array = Logic.GetArray(inputList.ToArray());
 
-                
+            var array2 = Logic.CopyArray(array, lines);
 
-            for (var i = 0; i < array.GetLength(0); i++)
+            for (var i = 0; i < array2.GetLength(0); i++)
             {
-                for (var j = 0; j < array.GetLength(1); j++)
+                for (var j = 0; j < array2.GetLength(1); j++)
                 {
-                    Console.Write(array[i, j] + " ");
+                    Console.Write(array2[i, j] + " ");
                 }
 
                 Console.WriteLine();
             }
 
             Console.WriteLine();
-            Console.WriteLine("Enter string: ");
-            string input = Console.ReadLine();
+            //Console.WriteLine("Enter string: ");
+            //string input = Console.ReadLine();
 
-            Console.WriteLine(Logic.CheckForString(array, input));
+            string input = "acdbcdc";
+            var hz = Validator.Validate(array, input);
+            Console.WriteLine(hz);
+
 
             Console.ReadKey();
         }
