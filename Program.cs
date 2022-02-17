@@ -48,13 +48,17 @@ namespace LFPC_lab1
             }
 
             Console.WriteLine();
-            //Console.WriteLine("Enter string: ");
-            //string input = Console.ReadLine();
+            
+            
 
             string input = "acdbcdc";
             var hz = Validator.Validate(array, input);
-            Console.WriteLine(hz);
 
+            Console.WriteLine("Enter string: ");
+            string hz2 = Console.ReadLine();
+
+            var idk = Validator.Validate(array, hz2);
+            Console.WriteLine(idk);
 
             Console.ReadKey();
         }

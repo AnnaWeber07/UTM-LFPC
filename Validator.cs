@@ -41,17 +41,17 @@ namespace LFPC_lab1
                 }
 
                 lastVertex = matrix[strIdx, colIdx];
-                if (lastVertex == '-')
+                if (lastVertex == '-' && i < symArr.Length - 1)
                 {
                     return false;
                 }
 
-                if (lastVertex == '*' && i == symArr.Length - 1)
+                if (lastVertex == '*' && i == symArr.Length)
                 {
                     return true;
                 }
             }
-            return false;
+            return true;
         }
 
         private static bool TryFindColIdx(char[,] matrix, char sym, out int idx)
