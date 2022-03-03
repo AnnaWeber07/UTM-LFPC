@@ -45,6 +45,10 @@ namespace lab2final_final
                             t.LastState = concat;
                         }
 
+                        if (concat.Contains(t.FirstState))
+                        {
+                            t.FirstState = concat;
+                        }
                     }
                 }
 
