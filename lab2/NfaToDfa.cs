@@ -24,17 +24,60 @@ namespace lab2final_final
 
         public static List<Transition> GetTransitions(List<Transition> transitions)
         {
-            List<Transition> newList = new List<Transition>();
-            for (int i = 0; i < 6; i++)
+            //  transitions.OrderBy(x => x.FirstState);
+            for (int i = 0; i < 4; i++)
             {
-              //если в transition[0] и transition[1] одинаковый вес weight[0]==weight[1]
-              //&& (firststate[0]==firststate[1] || )
 
+                if ((transitions[i].FirstState == transitions[i + 1].FirstState)
+                    && transitions[i].Weight == transitions[i + 1].Weight)
+                {
 
-               
+                    foreach (Transition t in transitions)
+                    {
+                        if (t.FirstState == transitions[i].FirstState)
+                        {
+                            string concat = transitions[i + 1].LastState + transitions[i].LastState;
+
+                            t.FirstState = concat;
+                            t.LastState = concat;
+                        }
+
+                        if (t.LastState == transitions[i].LastState)
+                        {
+                            string concat = transitions[i + 1].LastState + transitions[i].LastState;
+
+                            t.LastState = concat;
+                            t.LastState = concat;
+                        }
+                    }
+                }
+
+                else if ((transitions[i].LastState == transitions[i + 1].FirstState)
+                    && (transitions[i].Weight == transitions[i + 1].Weight))
+                {
+                    string concat = transitions[i].LastState + transitions[i + 1].FirstState;
+
+                    foreach (Transition t in transitions)
+                    {
+                        if (t.FirstState == transitions[i].FirstState)
+                        {
+                            t.FirstState = concat;
+                            t.LastState = concat;
+                        }
+                    }
+                }
             }
 
-            return newList;
+            return transitions;
+        }
+
+
+        public static void PrintDFA(List<Transition> transitions)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                Console.WriteLine(transitions[i].FirstState, transitions[i].Weight, transitions[i].LastState);
+            }
         }
 
         public static (string firstState, string weight, string lastState) ParseStringLine(string line)
