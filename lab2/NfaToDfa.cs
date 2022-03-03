@@ -31,21 +31,24 @@ namespace lab2final_final
                 if ((transitions[i].FirstState == transitions[i + 1].FirstState)
                     && transitions[i].Weight == transitions[i + 1].Weight)
                 {
+                    string concat = transitions[i + 1].LastState + transitions[i].LastState;
 
                     foreach (Transition t in transitions)
                     {
-                        if (t.FirstState == transitions[i].FirstState)
+                        if (t.FirstState == transitions[i].FirstState 
+                            || t.FirstState.Contains(transitions[i].FirstState)
+                            || t.FirstState.Contains(transitions[i+1].FirstState))
                         {
-                            string concat = transitions[i + 1].LastState + transitions[i].LastState;
-
+                            
                             t.FirstState = concat;
                             t.LastState = concat;
                         }
 
-                        if (t.LastState == transitions[i].LastState)
+                        if (t.LastState == transitions[i].LastState
+                            || t.LastState.Contains(transitions[i].LastState)
+                            || t.LastState.Contains(transitions[i + 1].LastState))
                         {
-                            string concat = transitions[i + 1].LastState + transitions[i].LastState;
-
+                           
                             t.LastState = concat;
                             t.LastState = concat;
                         }
@@ -74,9 +77,9 @@ namespace lab2final_final
 
         public static void PrintDFA(List<Transition> transitions)
         {
-            for (int i = 0; i < 5; i++)
+            foreach (Transition t in transitions)
             {
-                Console.WriteLine(transitions[i].FirstState, transitions[i].Weight, transitions[i].LastState);
+                Console.WriteLine(t.FirstState, " ", t.Weight, " ", t.LastState);
             }
         }
 
