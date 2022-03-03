@@ -21,11 +21,15 @@ namespace lab2final_final
 
             var i = NfaToDfa.GetList(lines);
 
-            Console.WriteLine("NFA: ", i);
+            Console.WriteLine("NFA: ");
+            NfaToDfa.PrintDFA(i);
+
+            Console.WriteLine();
 
             var j = NfaToDfa.GetList(lines);
             NfaToDfa.GetTransitions(j);
 
+            Console.WriteLine("DFA:");
             NfaToDfa.PrintDFA(j);
             
 
