@@ -1,0 +1,39 @@
+﻿G={V, T, P, S}
+T = {A..Z, a..z, 0..9, '.', ',', '(', ')', '{', '}', '[', ']', '*', '+', '<', '>', 
+     '', '<=', '==', '>=', '<>', '/', si, aliter, et, vel, verum, falsus, dum, enim, nota,
+     reditio}
+V = {<libellus>, <partes>, <identitatis>, <literae>, <numeri>, <numerus>, <alius>,
+    <verum_aut_falsum>, <logica_operandi>, <logice_operator>, <variabilis>
+    <expressio>, <filum>, <numerus>, <partes_nomen>, <partes_ocatus>, <declaratio>,
+    <arithmetica_operandi>, <arithmetica_operator>}
+S = <libellus>
+
+P = 
+{
+<libellus> -> <partes>
+<partes> -> <partes_nomen> <identitatis> ((<identitatis>*)(<expressio> || 
+            (<reditio> <identitatis>||<expressio>||<operation>))
+<partes_nomen> -> <filum>
+<identitatis> -> <literae> (<literae>*||<numeri>*)
+<variabilis> -> <literae> (<literae>*||<numeri>*)
+<filum> -> <literae><characters>*
+<alius> -> (<literae>*||<numeri>*||<alius>*||<literae>*<numeri>*)
+<literae> -> {A..Z, a..z}
+<numeri> -> {0..9}
+<alius> -> !@#$%^&*(){}[]*+,-.:;<=>?@\|/\t\n\x0b\x0c
+<expressio> -> <declaratio>||<partes_vocatus>
+<numerus> -> <numeri>*(.<numeri>*)
+<declaratio> -> <partes_nomen><variabilis> (<identitatis>||<operation>||<partes vocatus>||
+                                            <filum>||<numerus>)
+<partes_vocatus> -> <partes nomen> ((<identitatis>*||<numerus>*||<filum>*)) ||
+                      <identitatis> ((<identitatis>*||<numerus>*||<filum>*))
+<operandi> -> (<arithmetica_ operandi> || <logica_operandi>)
+<arithmetica_operandi> -> (<numerus><arithmetica_operator><numerus>) ||
+                          (<identitatis><arithmetica_operator><identitatis>)
+<logica_operandi> -> (<numerus><logic_operator><numerus>) || (<verum_aut_falsum><logice_operator><verum_aut_falsum>) ||
+                     (<identitatis><logice_operator><identitatis>)
+<arithmetica_operandi> -> '+' || '-' || '*' || '/' || '%'
+<logice_operator> -> <vel>||<si>||<si><aliter>||<aliter>||<et>||
+                    '>'||'<'||'>='||'<='||'<>'||
+<verum_aut_falsum> -> <verum>||<falsus>
+}
