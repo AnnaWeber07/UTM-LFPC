@@ -1,0 +1,102 @@
+Here you can see an original grammar (how it works) and its translated variant (FYI)
+this translation is for understanding the latin dsl
+
+G={V, T, P, S}
+T = {A..Z, a..z, 0..9, '.', ',', '(', ')', '{', '}', '[', ']', '*', '+', '<', '>', 
+     '', '<=', '==', '>=', '<>', '/', if, else, and, or, true, false, while, for, print,
+     return}
+V = {<program>, <function>, <identifier>, <letter>, <digit>, <other>, <operand>,
+    <comment>, <bool>, <boolean>, <logic_operation>, <loop>, <logic_operator>, <variable>
+    <expression>, <string>, <number>, <function name>, <funciton call>, <declaration>}
+S = <program>
+
+P = 
+{
+<program> -> <function>
+<function> -> <function name> <identifier> ((<identifier>*)(<expression> || 
+            (<return> <identifier>||<expression>||<operation>))
+<function name> -> <string>
+<identifier> -> <letters> (<letters>*||<digits>*)
+<variable> -> <letters> (<letters>*||<digits>*)
+<string> -> <letters><characters>*
+<characters> -> (<letters>*||<digits>*||<other>*||<letters>*<digits>*)
+<letters> -> {A..Z, a..z}
+<digits> -> {0..9}
+<other> -> !@#$%^&*(){}[]*+,-.:;<=>?@\|/\t\n\x0b\x0c
+<expression> -> <declaration>||<function call>
+<number> -> <digits>*(.<digits>*)
+<declaration> -> <function name><variable> (<identifier>||<operation>||<function call>||
+                                            <string>||<number>)
+<function call> -> <function name> ((<identifier>*||<number>*||<string>*)) ||
+                      <identifier> ((<identifier>*||<number>*||<string>*))
+<operation> -> (<arithmetic opertion> || <logic operation>)
+<arithmetic operation> -> (<number><arithmetic operator><number>) ||
+                          (<identifier><arithmetic operator><identifier>)
+<logic operation> -> (<number><logic operator><number>) || (<bool><logic operator><bool>) ||
+                     (<identifier><logic operator><identifier>)
+<arithmetic operation -> '+' || '-' || '*' || '/' || '%'
+<logic operator> -> <or>||<if>||<if><else>||<else>||<and>||
+                    '>'||'<'||'>='||'<='||'<>'||
+<bool> -> <true>||<false>
+}
+
+
+
+
+
+
+THESAURUS (dictionary):
+variable - variabilis
+funciton - partes
+name - nomen
+function call - partes vocatus
+declaration - declaratio
+number - numerus
+string - filum
+identity - identitatis
+assign - tribuo
+plus - plus
+minus - minus
+multiplication - multiplicatio
+division - divisio
+equals == - aequalis
+modulo - modulo
+greater > - maior
+lesser < - minor
+lesser or equal <= - minor vel aequalis
+greater or equal >= - maior vel aequalis
+not equal <> - non est aequalis
+left square bracket - bracket quadratum sinistram
+right square bracket - bracket quadratum ius
+left curly bracket - bracket crispus sinistram
+right curly braacket - bracket crispus ius
+left parenthesis - sinistro parenthesin
+right parenthesis - ius parenthesin
+logic operation - logica operandi
+logic operator - logice operator
+arithmetic operation - arithmetica operandi
+arithmetic operator - arithmetica operator
+expression - expressio
+comma - comma
+other - alius
+print - nota
+if - si
+else - aliter
+return - reditio
+and - et
+or - vel
+true - verum
+false - falsus
+digits - numeri
+letters - literae
+for - enim
+class - classis
+null - null
+this - hoc
+semicolon - signo
+while - dum
+dot - punctum
+end of file - finis documenti
+unexpected character - inopinatum litterae
+program - libellus
+bool - verum aut falsum
