@@ -1,35 +1,35 @@
-﻿PARTES WINE (VARIABILIS VINO)
+﻿partes wine (variabilis vino)
 {
-VINO = ROSA;
-SI (VINO == ALBUM)
+vino = rosa
+si (vino == album)
 {
-REDITIO VERUM;
+reditio verum
 }
-ALITER
+aliter
 {
-REDITIO FALSUS;
-}
-}
-
-PARTES COMPUTARE(NUMERUS PRIMIS, NUMERUS SECUNDO)
-{
-NUMERUS EVENTUM = PRIMIS - SECUNDO;
-SI (EVENTUM > 0)
-{
-REDITIO "POSITIVUM";
-}
-ALITER
-{
-REDITIO "NEGATIVUS";
+reditio falsus
 }
 }
 
-PARTES PRIMOR()
+partes computare (numerus primis, numerus secundo)
 {
-VARIABILIS VINO;
-NUMERUS PRIMIS = 70;
-NUMERUS SECUNDO = 40;
+numerus eventum = primis - secundo
+si (eventum > 0)
+{
+reditio "positivum"
+}
+aliter
+{
+reditio "negativus"
+}
+}
 
-NOTA(COMPUTARE(PRIMIS, SECUNDO));
-NOTA("HOC EST LATIMUN LEXER");
+partes primor()
+{
+variabilis vino
+numerus primis = 70
+numerus secundo = 40
+
+nota(computare(primis, secundo))
+nota("hoc est latinum lexer")
 }

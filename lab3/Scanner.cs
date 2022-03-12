@@ -1,203 +1,340 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 namespace LexerSharp
 {
-    class Scanner
+    public class Scanner
     {
-        private string _source;
-        private List<Token> tokens = new List<Token>();
-        private int _start = 0;
-        private int _current = 0;
+        private const string IDENT = "IDENTIFIER";
+        private const string KEYWORD = "KEYWORD";
+        private const string LPAREN = "LPAREN";
+        private const string RPAREN = "RPAREN";
+        private const string LBRACE = "LBRACE";
+        private const string RBRACE = "RBRACE";
+        private const string COMMA = "COMMA";
+        private const string PLUS = "PLUS";
+        private const string MINUS = "MINUS";
+        private const string MULTIPLICATION = "MULTIPLICATION";
+        private const string DIVISION = "DIVISION";
+        private const string GREATER = "GREATER";
+        private const string GREATER_OR_EQUAL = "GREATER_OR_EQUAL";
+        private const string LESS = "LESS";
+        private const string LESS_OR_EQUAL = "LESS_OR_EQUAL";
+        private const string NOT = "NOT";
+        private const string NOT_EQUALS = "NOT_EQUALS";
+        private const string EQUALS = "EQUALS";
+        private const string ASSIGN = "ASSIGN";
+        private const string RETURN = "RETURN";
+        private const string OR = "OR";
+        private const string AND = "AND";
+        private const string STRING_START = "STRING_START";
+        private const string STRING = "STRING";
+        private const string STRING_END = "STRING_END";
+        private const string INT = "INT";
+        private const string FLOAT = "FLOAT";
+
+        public string Filum { get; set; }
+        public List<Token> Tokens { get; set; }
+        public List<Error> Errors { get; set; }
+
         private int _line = 1;
+        private int _column = -1;
+        private int _position;
 
-        private static Dictionary<string, Token.TokenType> dictionary = new Dictionary<string, Token.TokenType>();
-
-        static void FillDictionary()
+        public Scanner(string filum)
         {
-            dictionary = new Dictionary<string, Token.TokenType>();
-
-            dictionary.Add("ET", Token.TokenType.ET);
-            dictionary.Add("ALITER", Token.TokenType.ALITER);
-            dictionary.Add("FALSUS", Token.TokenType.FALSUS);
-            dictionary.Add("VERUM", Token.TokenType.VERUM);
-            dictionary.Add("PARTES", Token.TokenType.PARTES);
-            dictionary.Add("SI", Token.TokenType.SI);
-            dictionary.Add("VARIABILIS", Token.TokenType.VARIABILIS);
-            dictionary.Add("VEL", Token.TokenType.VEL);
-            dictionary.Add("NOTA", Token.TokenType.NOTA);
-            dictionary.Add("REDITIO", Token.TokenType.REDITIO);
-            dictionary.Add("DUM", Token.TokenType.DUM);
-            dictionary.Add("FINIS", Token.TokenType.FINIS);
+            Filum = filum;
+            Errors = new List<Error>();
+            Tokens = new List<Token>();
         }
 
-
-        public Scanner(string source)
+        public void ScanTokens()
         {
-            _source = source;
-        }
-
-        private void addToken(Token.TokenType tokenType, object _literal)
-        {
-            string text = _source.Substring(_start, _current);
-            tokens.Add(new Token(tokenType, text, _literal, _line));
-        }
-
-        private void addToken(Token.TokenType tokenType)
-        {
-            addToken(tokenType, null);
-        }
-
-        private void scanToken() //scanning string for tokens
-        {
-            char check = _source.ElementAt(_current++);
-
-            if (Numeri(check))
-                Numerus();
-            else if (isCharacter(check))
-                Identitatis();
-            else if (check == '.')
-                addToken(Token.TokenType.PUNCTUM);
-            else if (check == ',')
-                addToken(Token.TokenType.COMMA);
-            else if (check == '(')
-                addToken(Token.TokenType.SINISTRAM_PAREN);
-            else if (check == ')')
-                addToken(Token.TokenType.IUS_PAREN);
-            else if (check == '{')
-                addToken(Token.TokenType.SINISTRAM_CRISPUS);
-            else if (check == '}')
-                addToken(Token.TokenType.IUS_CRISPUS);
-            else if (check == '-')
-                addToken(Token.TokenType.MINUS);
-            else if (check == '+')
-                addToken(Token.TokenType.PLUS);
-            else if (check == '*')
-                addToken(Token.TokenType.MULTIPLICATIO);
-            else if (check == ';')
-                addToken(Token.TokenType.SIGNO);
-            else if (check == '!')
-                addToken(Matcher('=') ? Token.TokenType.EXCLAMATIO : Token.TokenType.EXCLAMATIO_AEQUALIS);
-            else if (check == '=')
-                addToken(Matcher('=') ? Token.TokenType.AEQUALIS : Token.TokenType.TRIBUO);
-            else if (check == '<')
-                addToken(Matcher('=') ? Token.TokenType.MINOR_AEQUALIS : Token.TokenType.MINOR);
-            else if (check == '>')
-                addToken(Matcher('=') ? Token.TokenType.MAIOR_AEQUALIS : Token.TokenType.MAIOR);
-            else if (check == '\n')
-                _line++;
-            else if (check == '"')
+            for (_position = 0; _position < Filum.Length; _position++, _column++)
             {
-                bool v = (_current >= _source.Length);
-                while (SlashN() != '"' && !v)
+                int i = _position;
+
+                if (Filum[i] == ' ' || Filum[i] == '\t' || Filum[i] == '\r')
                 {
-                    if (SlashN() == '\n')
-                        _line++;
-                    _source.ElementAt(_current++);
+                    continue;
                 }
-                if (v)
-                    throw new Exception(_line.ToString() + " " + "inopinatum litterae");
-
-                _source.ElementAt(_current++);
-                string value = _source.Substring(_start + 1, _current - 1);
-                addToken(Token.TokenType.FILUM, value);
-            }
-            else if (check == '/')
-            {
-                if (Matcher('/'))
+                else if (Filum[i] == '\n')
                 {
-                    bool v = (_current >= _source.Length);
-                    if (SlashN() != '\n' && !v)
+                    _line++;
+                    _column = -1;
+                }
+                else if (Filum[i].IsIdentifierStart())
+                {
+                    var newToken = GetIdentifier();
+                    if (newToken != null)
                     {
-                        _source.ElementAt(_current++);
+                        Tokens.Add(newToken);
+                    }
+                }
+                else if (Filum[i].IsDigit())
+                {
+                    var newToken = Number();
+                    if (newToken != null)
+                    {
+                        Tokens.Add(newToken);
+                    }
+                }
+                else if (Filum[i] == '"')
+                {
+                    var newTokens = NewString();
+                    if (newTokens != null)
+                    {
+                        Tokens.AddRange(newTokens);
+                    }
+                }
+                else if (Filum[i] == ',')
+                {
+                    Tokens.Add(new Token(COMMA, ","));
+                }
+                else if (Filum[i] == '-')
+                {
+                    Tokens.Add(new Token(MINUS, "-"));
+                }
+                else if (Filum[i] == '+')
+                {
+                    Tokens.Add(new Token(PLUS, "+"));
+                }
+                else if (Filum[i] == '*')
+                {
+                    Tokens.Add(new Token(MULTIPLICATION, "*"));
+                }
+                else if (Filum[i] == '/')
+                {
+                    Tokens.Add(new Token(DIVISION, "/"));
+                }
+                else if (Filum[i] == '(')
+                {
+                    Tokens.Add(new Token(LPAREN, "("));
+                }
+                else if (Filum[i] == ')')
+                {
+                    Tokens.Add(new Token(RPAREN, ")"));
+                }
+                else if (Filum[i] == '{')
+                {
+                    Tokens.Add(new Token(LBRACE, "{"));
+                }
+                else if (Filum[i] == '}')
+                {
+                    Tokens.Add(new Token(RBRACE, "}"));
+                }
+                else if (Filum[i].IsComparisonOperator() || Filum[i] == '=')
+                {
+                    var withEquality = i < Filum.Length - 1 && Filum[i + 1] == '=';
+
+                    Tokens.Add(Comparer(withEquality));
+                }
+                else if (Filum[i].IsBoolOperatorStart())
+                {
+                    if (i < Filum.Length - 1 && Filum[i + 1] == Filum[i])
+                    {
+                        Tokens.Add(TrueOrFalse(Filum));
                     }
                     else
                     {
-                        addToken(Token.TokenType.DIVISIO);
+                        Errors.Add(Error.UnexpectedSymbol(_line, _column, Filum[i]));
                     }
                 }
+                else
+                {
+                    Errors.Add(Error.UnexpectedSymbol(_line, _column, Filum[i]));
+                }
             }
-            else throw new Exception(_line.ToString() + " " + "inopinatum litterae");
-
         }
 
-        private bool Matcher(char v)
+        public void Output()
         {
-            if (_current >= _source.Length) return false;
-            if (_source.ElementAt(_current) != v) return false;
-
-            _current++;
-            return true;
-        }
-
-        private char SlashN()
-        {
-            if (_current >= _source.Length) return '\0';
-            return _source.ElementAt(_current);
-        }
-
-        private bool Numeri(char c)
-        {
-            return c >= '0' && c <= 9;
-        }
-
-        private void Numerus()
-        {
-            while (Numeri(SlashN()))
-                _source.ElementAt(_current++);
-
-            if (SlashN() == '.' && Numeri(GetNext()))
+            if (Errors.Count == 0)
             {
-                _source.ElementAt(_current++);
-                while (Numeri(SlashN()))
-                    _source.ElementAt(_current++);
+                foreach (var token in Tokens)
+                {
+                    Console.WriteLine(token);
+                }
             }
-
-            addToken(Token.TokenType.NUMERUS, Double.Parse(_source.Substring(_start, _current)));
-        }
-
-        private char GetNext()
-        {
-            if (_current + 1 >= _source.Length)
-                return '\0';
-
-            return _source.ElementAt(_current + 1);
-        }
-
-        private void Identitatis()
-        {
-            while (isNumeri(SlashN()))
-                _source.ElementAt(_current++);
-
-            addToken(Token.TokenType.IDENTITATIS);
-
-            string text = _source.Substring(_start, _current);
-            Token.TokenType type = 
-
-        }
-
-        private bool isCharacter(char c)
-        {
-            return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
-        }
-
-        private bool isNumeri(char c)
-        {
-            return isNumeri(c) || isCharacter(c);
-        }
-
-        public List<Token> scanTokens()
-        {
-            while (_current >= _source.Length)
+            else
             {
-                _start = _current;
-                scanToken();
+                foreach (var error in Errors)
+                {
+                    Console.WriteLine(error);
+                }
+            }
+        }
+
+        private Token Number()
+        {
+            string tokenValue = "";
+            bool isFloat = false;
+            for (; _position < Filum.Length; _position++)
+            {
+                if (Filum[_position].IsWhiteSpace() || Filum[_position].IsOperator() || Filum[_position].IsParantheses() || Filum[_position].IsBrace())
+                {
+                    _position--;
+                    break;
+                }
+
+                _column++;
+
+                if (Filum[_position] == '.' && isFloat)
+                {
+                    Errors.Add(Error.UnexpectedSymbol(_line, _column, Filum[_position]));
+                }
+                else if (Filum[_position] == '.')
+                {
+                    tokenValue += Filum[_position];
+                    isFloat = true;
+                }
+                else if (Filum[_position].IsDigit())
+                {
+                    tokenValue += Filum[_position];
+                }
+                else
+                {
+                    Errors.Add(Error.UnexpectedSymbol(_line, _column, Filum[_position]));
+                }
             }
 
-            tokens.Add(new Token(Token.TokenType.FINIS, "", null, _line));
+            if (Errors.Count > 0)
+            {
+                return null;
+            }
+            return isFloat ?
+                new Token(FLOAT, tokenValue) :
+                new Token(INT, tokenValue);
+        }
+
+        private Token GetIdentifier()
+        {
+            string tokenValue = "";
+
+            for (; _position < Filum.Length; _position++)
+            {
+                if (Filum[_position].IsWhiteSpace() || Filum[_position].IsOperator() || 
+                    Filum[_position].IsParantheses() || Filum[_position].IsBrace() || Filum[_position] == ',')
+                {
+                    _position--;
+                    break;
+                }
+
+                _column++;
+
+                if (Filum[_position].IsIdentifierSymbol())
+                {
+                    tokenValue += Filum[_position];
+                }
+                else
+                {
+                    Errors.Add(Error.UnexpectedSymbol(_line, _column, Filum[_position]));
+                }
+            }
+
+            if (Errors.Count > 0)
+            {
+                return null;
+            }
+            if (tokenValue.IsKeyword())
+            {
+                return new Token($"{KEYWORD}[{KeywordsAndConst.Keywords[tokenValue]}]", tokenValue);
+            }
+          
+            return new Token(IDENT, tokenValue);
+        }
+
+        private List<Token> NewString()
+        {
+            List<Token> tokens = new List<Token>
+            {
+                new Token(STRING_START, "\"")
+            };
+
+            _position++;
+            _column++;
+
+            string tokenValue = "";
+
+            for (; _position < Filum.Length; _position++, _column++)
+            {
+                if (Filum[_position] == '"')
+                {
+                    _position++;
+                    _column++;
+                    break;
+                }
+
+                if (Filum[_position].IsChar())
+                {
+                    tokenValue += Filum[_position];
+                }
+                else
+                {
+                    Errors.Add(Error.ExpectedSymbol(_line, _column, '"'));
+                }
+            }
+
+            if (Errors.Count > 0)
+            {
+                return null;
+            }
+            if (!string.IsNullOrEmpty(tokenValue))
+            {
+                tokens.Add(new Token(STRING, tokenValue));
+            }
+            tokens.Add(new Token(STRING_END, "\""));
+
             return tokens;
+        }
+
+        private Token Comparer(bool withEquals)
+        {
+            string tokenValue = "";
+            tokenValue += Filum[_position];
+
+            if (withEquals)
+            {
+                _position++;
+                _column++;
+                tokenValue += Filum[_position];
+                switch (tokenValue[0])
+                {
+                    case '>': return new Token(GREATER_OR_EQUAL, tokenValue);
+                    case '<': return new Token(LESS_OR_EQUAL, tokenValue);
+                    case '=': return new Token(EQUALS, tokenValue);
+                    case '!': return new Token(NOT_EQUALS, tokenValue);
+                }
+            }
+            else
+            {
+                switch (tokenValue[0])
+                {
+                    case '>': return new Token(GREATER, tokenValue);
+                    case '<': return new Token(LESS, tokenValue);
+                    case '=': return new Token(ASSIGN, tokenValue);
+                    case '!': return new Token(NOT, tokenValue);
+                }
+            }
+            return null;
+        }
+
+        private Token TrueOrFalse(string code)
+        {
+            string tokenValue = "";
+            tokenValue += code[_position];
+
+            _position++;
+            _column++;
+            tokenValue += code[_position];
+
+            switch (tokenValue[0])
+            {
+                case '|': return new Token(OR, tokenValue);
+                case '&': return new Token(AND, tokenValue);
+            }
+
+            return null;
         }
     }
 }
