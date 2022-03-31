@@ -1,0 +1,15 @@
+﻿G={Vn, Vt, P, S}
+Vn={S, A, B, C, D}
+Vt={a, b}
+P={
+1. S=>bA
+2. S=>BC
+3. A=>a
+4. A=>aS
+5. A=>bAaAb
+6. B=>A
+7. B=>bS
+8. B=>aAa
+9. C=>empty
+10. C=>AB
+11. D=>AB}
