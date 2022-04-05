@@ -81,19 +81,69 @@ namespace LFPC_Chomsky
                 .ToList();
         }
 
-
         public List<string> EpsilonElimination(List<string> prod)
         //Eliminate epsilon productions
         {
             //get P transitions copied to a new list for easier use
+            List<string> production = new List<string>();
+            List<string> result = new List<string>();
+            List<string> final = new List<string>();
+            List<char> nonterminal = new List<char>();
 
-            return prod;
+            foreach (string line in prod) //copy
+            {
+                result.Add(line);
+            }
+
+            foreach (string line in prod) //find character(s) leading to e & remove those lines
+            {
+                if (line.Contains("epsilon"))
+                {
+                    char symbol = line.ElementAt(0);
+                    nonterminal.Add(symbol);
+                    result.Remove(line);
+                }
+            }
+
+            foreach (string line in prod) //find rules to eliminate e productions
+            {
+                foreach (char symbol in nonterminal)
+                {
+                    if (line.Contains(symbol) && line.IndexOf(symbol) != 0)
+                    {
+                        production.Add(line);
+                    }
+                }
+            }
+
+            foreach (string line in production) //append additional strings to list
+            {
+                foreach (char symbol in nonterminal)
+                {
+                    if (line.Contains(symbol) && line.IndexOf(symbol) != 0)
+                    {
+                        char[] removeOneChar = line.ToArray();
+                        var iterationForAppend = removeOneChar.Count(p => p == symbol);
+
+                        for (int i = 0; i <= iterationForAppend; i++)
+                        {
+                            int position = line.IndexOf(symbol);
+                            string formatted = line.Remove(position, i);
+                            result.Add(formatted);
+                        }
+                    }
+                }
+            }
+
+            final = result.Distinct().ToList(); //remove duplicates
+
+            return final;
         }
 
         public List<string> RenamingElimination(List<string> prod)
         //Eliminate any renaming
         {
-            //The production that has the form XY, X and Y are nonterminal, is called renaming
+            //The production that has the form X->Y, X and Y are nonterminal, is called renaming
             return prod;
         }
 
