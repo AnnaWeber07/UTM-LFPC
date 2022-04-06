@@ -18,25 +18,34 @@ namespace LFPC_Chomsky
             this.grammar = grammar;
         }
 
-        public List<string> GetChomskyForm()
+        public void GetChomskyForm()
         {
             List<string> production = new List<string>();
+            List<string> production2 = new List<string>();
+            List<string> production3 = new List<string>();
+            List<string> production4 = new List<string>();
+            List<string> production5 = new List<string>();
+            List<string> production6 = new List<string>();
 
             NonTerminal = GetNonterminalSymbols(grammar);
             Terminal = GetTerminalSymbols(grammar);
 
             production = GetProduction(grammar);
 
-            EpsilonElimination(production);
-            RenamingElimination(production);
-            InaccessibleSymbolElimination(production);
-            NonProductiveSymbolElimination(production);
-            GetChomskyNormalForm(production);
-            //finalStep
-            //call print function?
+            production2 = EpsilonElimination(production);
+            PrintForm(production2);
 
+            production3 = RenamingElimination(production2);
+            PrintForm(production3);
 
-            return production;
+            production4 = InaccessibleSymbolElimination(production3);
+            PrintForm(production4);
+
+            production5 = NonProductiveSymbolElimination(production4);
+            PrintForm(production5);
+
+            production6 = GetChomskyNormalForm(production5);
+            PrintForm(production6);
         }
 
 
@@ -144,8 +153,24 @@ namespace LFPC_Chomsky
         //Eliminate any renaming
         {
             //The production that has the form X->Y, X and Y are nonterminal, is called renaming
+
+            List<string> production = new List<string>();
+
+
+            foreach (string line in prod)
+            {
+                string check = line.Substring(3);
+
+                if (check.All(x => Char.IsUpper(x)))
+                {
+                    //...
+                }
+
+            }
+
             return prod;
         }
+
 
         public List<string> InaccessibleSymbolElimination(List<string> prod)
         //Eliminate inaccessible symbols
@@ -168,7 +193,7 @@ namespace LFPC_Chomsky
             return prod;
         }
 
-        public void PrintForm()
+        public void PrintForm(List<string> grammar)
         {
             foreach (string line in grammar)
             {
