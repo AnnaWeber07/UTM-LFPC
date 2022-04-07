@@ -33,19 +33,19 @@ namespace LFPC_Chomsky
             production = GetProduction(grammar);
 
             production2 = EpsilonElimination(production);
-            PrintForm(production2);
+            //PrintForm(production2);
 
             production3 = RenamingElimination(production2);
-            PrintForm(production3);
+            //            PrintForm(production3);
 
             production4 = InaccessibleSymbolElimination(production3);
-            PrintForm(production4);
+            //          PrintForm(production4);
 
             production5 = NonProductiveSymbolElimination(production4);
-            PrintForm(production5);
+            //        PrintForm(production5);
 
             production6 = GetChomskyNormalForm(production5);
-            PrintForm(production6);
+            //      PrintForm(production6);
         }
 
 
@@ -68,7 +68,7 @@ namespace LFPC_Chomsky
             return production;
         }
 
-        public List<string> GetNonterminalSymbols(List<string> grammar)
+        private List<string> GetNonterminalSymbols(List<string> grammar)
         {
             var elements = grammar[1].Substring(3)
                                      .Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
@@ -90,7 +90,7 @@ namespace LFPC_Chomsky
                 .ToList();
         }
 
-        public List<string> EpsilonElimination(List<string> prod)
+        private List<string> EpsilonElimination(List<string> prod)
         //Eliminate epsilon productions
         {
             //get P transitions copied to a new list for easier use
@@ -99,10 +99,7 @@ namespace LFPC_Chomsky
             List<string> final = new List<string>();
             List<char> nonterminal = new List<char>();
 
-            foreach (string line in prod) //copy
-            {
-                result.Add(line);
-            }
+            result.AddRange(prod);
 
             foreach (string line in prod) //find character(s) leading to e & remove those lines
             {
@@ -149,56 +146,88 @@ namespace LFPC_Chomsky
             return final;
         }
 
-        public List<string> RenamingElimination(List<string> prod)
+        private List<string> RenamingElimination(List<string> prod)
         //Eliminate any renaming
         {
             //The production that has the form X->Y, X and Y are nonterminal, is called renaming
 
             List<string> production = new List<string>();
+            List<string> result = new List<string>();
+            List<string> additional = new List<string>();
 
+            result.AddRange(prod);
 
-            foreach (string line in prod)
+            foreach (string line in prod) //find unit productions
             {
                 string check = line.Substring(3);
 
-                if (check.All(x => Char.IsUpper(x)))
+                if (check.All(x => Char.IsUpper(x)) && check.Length == 1)
                 {
-                    //...
+                    production.Add(line);
+                    result.Remove(line); //remove X -> Y productions. they ae still available for iterations
                 }
-
             }
 
-            return prod;
+            //for each X -> Y, substitute with Y values:
+
+            foreach (string line in production)
+            {
+                string symbol = line.Substring(0, 1); //get needed symbol
+                string startOfReplacement = line.Substring(3, 1);
+
+                foreach (string checker in result)
+                {
+                    if (checker.StartsWith(startOfReplacement))
+                    {
+
+                        string format = symbol + "=>" + checker.Substring(3);
+                        additional.Add(format);
+                    }
+                }
+            }
+
+            result.AddRange(additional);
+
+            return result;
         }
 
-
-        public List<string> InaccessibleSymbolElimination(List<string> prod)
+        private List<string> InaccessibleSymbolElimination(List<string> prod)
         //Eliminate inaccessible symbols
         {
-            //blahblahblah
-            return prod;
+            List<string> result = new List<string>();
+
+            result.AddRange(prod);
+
+
+
+
+            return result;
         }
 
-        public List<string> NonProductiveSymbolElimination(List<string> prod)
+
+
+        private List<string> NonProductiveSymbolElimination(List<string> prod)
         // Eliminate the nonproductive symbols
         {
             //blah
             return prod;
         }
 
-        public List<string> GetChomskyNormalForm(List<string> prod)
+        private List<string> GetChomskyNormalForm(List<string> prod)
         // Obtain the Chomsky Normal Form S=>AB or S=>a
         {
             //fuck this
             return prod;
         }
 
-        public void PrintForm(List<string> grammar)
+        private void PrintForm(List<string> grammar)
         {
             foreach (string line in grammar)
             {
                 Console.WriteLine(line);
             }
         }
+
+
     }
 }
