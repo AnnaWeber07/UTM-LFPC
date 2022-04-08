@@ -268,9 +268,24 @@ namespace LFPC_Chomsky
         // Obtain the Chomsky Normal Form S=>AB or S=>a
         {
             List<string> result = new List<string>();
+            List<string> toBeRenamed = new List<string>();
             Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
 
             result.AddRange(prod);
+
+            foreach (string line in prod)
+            {
+                string secondPart = line.Substring(3);
+                char[] checkSymbol = secondPart.ToCharArray();
+
+                bool firstCondition = (checkSymbol.Length == 1) && checkSymbol.All(x => Char.IsLower(x));
+                bool secondCondition = (checkSymbol.Length == 2) && checkSymbol.All(x => Char.IsUpper(x));
+
+                if (!firstCondition && !secondCondition)
+                {
+                    toBeRenamed.Add(line);
+                }
+            }
 
 
             foreach (string line in prod)
@@ -289,6 +304,11 @@ namespace LFPC_Chomsky
                     if (keyValuePairs.ContainsKey(keyName))
                     {
                         keyName = GetLetter().ToString();
+
+                        if (keyValuePairs.ContainsKey(keyName))
+                        {
+                            keyName = GetLetter().ToString();
+                        }
                     }
 
                     if (secondPart.Length == 2)
@@ -302,9 +322,9 @@ namespace LFPC_Chomsky
 
                             string renamer = keyValuePairs[keyName].ToString();
 
-                            for (int j = 0; j < result.Count; j++)
+                            for (int j = 0; j < toBeRenamed.Count; j++)
                             {
-                                result[j].Replace(renamer, keyName);
+                                toBeRenamed[j].Replace(renamer, keyName);
                             }
                         }
 
@@ -326,14 +346,14 @@ namespace LFPC_Chomsky
                             if (!keyValuePairs.ContainsKey(secondPart.Substring(i, 2)))
                             {
                                 keyValuePairs.Add(keyName, secondPart.Substring(i, 2));
+                            }
 
-                                string renamer = keyValuePairs[keyName];
-                                line.Replace(keyName, renamer);
+                            string renamer = keyValuePairs[keyName].ToString();
+                            line.Replace(keyName, renamer);
 
-                                foreach (string s in result)
-                                {
-                                    s.Replace(keyName, renamer);
-                                }
+                            foreach (string s in result)
+                            {
+                                s.Replace(renamer, keyName);
                             }
 
                             //if (keyValuePairs.ContainsKey(secondPart.Substring(i, 2)))
@@ -351,7 +371,16 @@ namespace LFPC_Chomsky
                     {
                         for (int i = 0; i < secondPart.Length; i++)
                         {
-                            keyValuePairs.Add(keyName, secondPart.Substring(i, 2));
+                            if (!keyValuePairs.ContainsKey(secondPart.Substring(i, 2)))
+                                keyValuePairs.Add(keyName, secondPart.Substring(i, 2));
+
+                            string renamer = keyValuePairs[keyName].ToString();
+                            line.Replace(keyName, renamer);
+
+                            foreach (string s in result)
+                            {
+                                s.Replace(renamer, keyName);
+                            }
                         }
                     }
 
