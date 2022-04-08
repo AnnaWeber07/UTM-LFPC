@@ -15,14 +15,13 @@ namespace LFPC_Chomsky
 
             string path = @"C:\Users\Анна\source\repos\LFPC_Chomsky\LFPC_Chomsky\TextFile.txt";
             string[] text = File.ReadAllLines(path);
-            List<string> initialGrammar = text.ToList<string>();
+            List<string> initialGrammar = text.ToList();
+
             Grammar grammar = new Grammar(initialGrammar);
             grammar.GetChomskyForm();
-            grammar.PrintForm();
 
             Console.WriteLine();
             Console.ReadKey();
-
         }
     }
 }

@@ -90,8 +90,7 @@ namespace LFPC_Chomsky
                 .ToList();
         }
 
-        private List<string> EpsilonElimination(List<string> prod)
-        //Eliminate epsilon productions
+        private List<string> EpsilonElimination(List<string> prod) //Eliminate epsilon productions
         {
             //get P transitions copied to a new list for easier use
             List<string> production = new List<string>();
@@ -146,8 +145,7 @@ namespace LFPC_Chomsky
             return final;
         }
 
-        private List<string> RenamingElimination(List<string> prod)
-        //Eliminate any renaming
+        private List<string> RenamingElimination(List<string> prod) //Eliminate any renaming
         {
             //The production that has the form X->Y, X and Y are nonterminal, is called renaming
 
@@ -179,7 +177,6 @@ namespace LFPC_Chomsky
                 {
                     if (checker.StartsWith(startOfReplacement))
                     {
-
                         string format = symbol + "=>" + checker.Substring(3);
                         additional.Add(format);
                     }
@@ -191,32 +188,87 @@ namespace LFPC_Chomsky
             return result;
         }
 
-        private List<string> InaccessibleSymbolElimination(List<string> prod)
-        //Eliminate inaccessible symbols
+        private List<string> InaccessibleSymbolElimination(List<string> prod) //Eliminate inaccessible symbols
         {
+            List<string> production = new List<string>();
             List<string> result = new List<string>();
+            List<string> secondPart = new List<string>();
+            List<string> copy = new List<string>();
+
+            //если элемент 0 индекса не содержится в листе в части после =>
+            //если (дополнительно) элемент содержится только в своей же строчке
 
             result.AddRange(prod);
 
+            foreach (string line in prod)
+            {
+                string s = line.Substring(3);
+                secondPart.Add(s);
+            }
 
+            foreach (var str in prod)
+            {
+                var nonTerminalSym = Convert.ToChar(str.Split(new[] { "=>" }, StringSplitOptions.RemoveEmptyEntries)[0]);
+                char startSymbol = 'S';
 
+                if (nonTerminalSym != startSymbol)
+                {
+                    if (!prod.Exists(x => x.Split(new[] { "=>" }, StringSplitOptions.RemoveEmptyEntries)[1].ToCharArray()[0] == nonTerminalSym) &&
+                        !secondPart.Exists(x => x.Contains(nonTerminalSym)))
+                    {
+                        result.Remove(str);
+                    }
+                }
+            }
+            //list.RemoveAll(x=>x.ToCharArray[0] == symbol
 
             return result;
         }
 
 
-
         private List<string> NonProductiveSymbolElimination(List<string> prod)
         // Eliminate the nonproductive symbols
         {
-            //blah
+            List<string> production = new List<string>();
+            List<string> result = new List<string>();
+            List<string> secondPart = new List<string>();
+
+            result.AddRange(prod);
+
+            //если ! нетерминальный символ ведет к терминальному (или к символу, который уже проверен), 
+            //то удаляю строку с этим символом в начале
+
+            foreach (string line in prod)
+            {
+                string s = line.Substring(3);
+                secondPart.Add(s);
+            }
+
+            foreach (string line in prod)
+            {
+                var nonTerminalSym = Convert.ToChar(Terminal);
+
+                //first cycle to find direct NT->T
+
+
+
+                if (!prod.Exists(x => x.Split(new[] { "=>" }, StringSplitOptions.RemoveEmptyEntries)[1].ToCharArray()[0] == nonTerminalSym) &&
+                       !secondPart.Exists(x => x.Contains(nonTerminalSym)))
+                {
+
+                }
+
+                //second cycle to find indirect NT->NT
+            }
+
+
             return prod;
         }
 
         private List<string> GetChomskyNormalForm(List<string> prod)
         // Obtain the Chomsky Normal Form S=>AB or S=>a
         {
-            //fuck this
+            Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
             return prod;
         }
 
@@ -226,8 +278,8 @@ namespace LFPC_Chomsky
             {
                 Console.WriteLine(line);
             }
+
+            Console.WriteLine();
         }
-
-
     }
 }
