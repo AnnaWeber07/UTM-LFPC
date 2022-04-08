@@ -273,6 +273,7 @@ namespace LFPC_Chomsky
 
             result.AddRange(prod);
 
+
             foreach (string line in prod)
             {
                 string secondPart = line.Substring(3);
@@ -324,69 +325,85 @@ namespace LFPC_Chomsky
 
                             for (int j = 0; j < toBeRenamed.Count; j++)
                             {
-                                toBeRenamed[j].Replace(renamer, keyName);
-                            }
-                        }
+                                if (toBeRenamed[j].Contains(renamer))
+                                {
+                                    if (result.Any(x => x == toBeRenamed[j]) && toBeRenamed[j].Substring(3).Length == 2)
+                                        result.Remove(toBeRenamed[j]);
 
-                        //if (keyValuePairs.ContainsKey(secondPart))
-                        //{
-                        //    string renamer = keyValuePairs[keyName];
+                                    string adder = toBeRenamed[j].Replace(renamer, keyName);
 
-                        //    foreach (string s in result)
-                        //    {
-                        //        s.Replace(keyName, renamer);
-                        //    }
-                        //}
-                    }
-
-                    if (secondPart.Length > 2 && secondPart.Length % 2 == 0)
-                    {
-                        for (int i = 0; i < secondPart.Length; i += 2)
-                        {
-                            if (!keyValuePairs.ContainsKey(secondPart.Substring(i, 2)))
-                            {
-                                keyValuePairs.Add(keyName, secondPart.Substring(i, 2));
-                            }
-
-                            string renamer = keyValuePairs[keyName].ToString();
-                            line.Replace(keyName, renamer);
-
-                            foreach (string s in result)
-                            {
-                                s.Replace(renamer, keyName);
-                            }
-
-                            //if (keyValuePairs.ContainsKey(secondPart.Substring(i, 2)))
-                            //{
-                            //    string renamer = keyValuePairs[keyName];
-                            //    foreach (string s in result)
-                            //    {
-                            //        s.Replace(keyName, renamer);
-                            //    }
-                            //}
-                        }
-                    }
-
-                    if (secondPart.Length > 2 && secondPart.Length % 2 == 1)
-                    {
-                        for (int i = 0; i < secondPart.Length; i++)
-                        {
-                            if (!keyValuePairs.ContainsKey(secondPart.Substring(i, 2)))
-                                keyValuePairs.Add(keyName, secondPart.Substring(i, 2));
-
-                            string renamer = keyValuePairs[keyName].ToString();
-                            line.Replace(keyName, renamer);
-
-                            foreach (string s in result)
-                            {
-                                s.Replace(renamer, keyName);
+                                    if (adder.Substring(3).Length == 2)
+                                        result.Add(adder);
+                                }
                             }
                         }
                     }
+                    //if (keyValuePairs.ContainsKey(secondPart))
+                    //{
+                    //    string renamer = keyValuePairs[keyName];
+
+                    //    foreach (string s in result)
+                    //    {
+                    //        s.Replace(keyName, renamer);
+                    //    }
+                    //}
+
+
+                    //if (secondPart.Length > 2 && secondPart.Length % 2 == 0)
+                    //{
+                    //    for (int i = 0; i < secondPart.Length; i += 2)
+                    //    {
+                    //        if (!keyValuePairs.ContainsKey(secondPart.Substring(i, 2)))
+                    //        {
+                    //            keyValuePairs.Add(keyName, secondPart.Substring(i, 2));
+                    //        }
+
+                    //        string renamer = keyValuePairs[keyName].ToString();
+                    //        line.Replace(keyName, renamer);
+
+                    //        for (int j = 0; j < toBeRenamed.Count; j++)
+                    //        {
+                    //            if (toBeRenamed[j].Contains(keyName))
+                    //            {
+                    //                ///
+                    //            }
+
+                    //        }
+
+                    //if (keyValuePairs.ContainsKey(secondPart.Substring(i, 2)))
+                    //{
+                    //    string renamer = keyValuePairs[keyName];
+                    //    foreach (string s in result)
+                    //    {
+                    //        s.Replace(keyName, renamer);
+                    //    }
+                    //}
+
+                    //if (secondPart.Length > 2 && secondPart.Length % 2 == 1)
+                    //{
+                    //    for (int i = 0; i < secondPart.Length; i++)
+                    //    {
+                    //        if (!keyValuePairs2.ContainsKey(secondPart.Substring(i, 2)))
+                    //        {
+                    //            keyValuePairs2.Add(keyName, secondPart.Substring(i, 2));
+                    //        }
+
+                    //        string renamer = keyValuePairs[keyName].ToString();
+                    //        line.Replace(keyName, renamer);
+
+                    //        for (int j = 0; j < toBeRenamed.Count; j++)
+                    //        {
+                    //            if (toBeRenamed[j].Contains(renamer) && toBeRenamed[j].Substring(3).Length > 2)
+                    //            {
+                    //                string adder = toBeRenamed[j].Replace(renamer, keyName);
+                    //                result.Add(adder);
+                    //            }
+                    //        }
+                    //    }
+                    //}
 
 
                 }
-
             }
 
             return result;
