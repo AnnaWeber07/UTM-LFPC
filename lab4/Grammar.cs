@@ -231,45 +231,135 @@ namespace LFPC_Chomsky
         {
             List<string> production = new List<string>();
             List<string> result = new List<string>();
-            List<string> secondPart = new List<string>();
+            List<string> accessible = new List<string>();
 
             result.AddRange(prod);
 
-            //если ! нетерминальный символ ведет к терминальному (или к символу, который уже проверен), 
-            //то удаляю строку с этим символом в начале
-
-            foreach (string line in prod)
+            foreach (string s in NonTerminal)
             {
-                string s = line.Substring(3);
-                secondPart.Add(s);
-            }
-
-            foreach (string line in prod)
-            {
-                var nonTerminalSym = Convert.ToChar(Terminal);
-
-                //first cycle to find direct NT->T
-
-
-
-                if (!prod.Exists(x => x.Split(new[] { "=>" }, StringSplitOptions.RemoveEmptyEntries)[1].ToCharArray()[0] == nonTerminalSym) &&
-                       !secondPart.Exists(x => x.Contains(nonTerminalSym)))
+                foreach (string line in prod)
                 {
-
+                    string check = line.Substring(3);
+                    if (check.Length == 1)
+                    {
+                        accessible.Add(check);
+                    }
                 }
-
-                //second cycle to find indirect NT->NT
             }
 
+            foreach (string s in NonTerminal)
+            {
+                if (!accessible.Contains(s))
+                {
+                    if ((prod.Any(x => x == s && x.IndexOf(s) == 0)))
+                    {
+                        foreach (string line in prod)
+                        {
+                            result.Remove(line);
+                        }
+                    }
+                }
+            }
 
-            return prod;
+            return result;
         }
 
         private List<string> GetChomskyNormalForm(List<string> prod)
         // Obtain the Chomsky Normal Form S=>AB or S=>a
         {
+            List<string> result = new List<string>();
+            List<string> additional = new List<string>();
             Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
-            return prod;
+
+
+            result.AddRange(prod);
+
+            foreach (string s in additional)
+            {
+                string secondPartLine = s.Substring(3);
+                additional.Add(secondPartLine);
+            }
+
+            foreach (string line in prod)
+            {
+                string secondPart = line.Substring(3);
+                char[] checkSymbol = secondPart.ToCharArray();
+
+                bool firstCondition = (checkSymbol.Length == 1) && checkSymbol.All(x => Char.IsLower(x));
+                bool secondCondition = (checkSymbol.Length == 2) && checkSymbol.All(x => Char.IsUpper(x));
+
+                if (!firstCondition && !secondCondition)
+                {
+                    int format = line.Count() + 1;
+                    string keyName = "X" + format.ToString();
+
+                    if (secondPart.Length == 2)
+                    {
+                        if (!keyValuePairs.ContainsKey(secondPart))
+                        {
+                            keyValuePairs.Add(keyName, secondPart.Substring(0, 1));
+
+                            string renamer = keyValuePairs[keyName];
+
+                            foreach (string s in result)
+                            {
+                                s.Replace(keyName, renamer);
+                            }
+                        }
+
+                        if (keyValuePairs.ContainsKey(secondPart))
+                        {
+                            string renamer = keyValuePairs[keyName];
+
+                            foreach (string s in result)
+                            {
+                                s.Replace(keyName, renamer);
+                            }
+                        }
+                    }
+
+                    if (secondPart.Length > 2 && secondPart.Length % 2 == 0)
+                    {
+                        for (int i = 0; i < secondPart.Length; i += 2)
+                        {
+                            if (!keyValuePairs.ContainsKey(secondPart.Substring(i, 2)))
+                            {
+                                keyValuePairs.Add(keyName, secondPart.Substring(i, 2));
+
+                                string renamer = keyValuePairs[keyName];
+                                line.Replace(keyName, renamer);
+
+                                foreach (string s in result)
+                                {
+                                    s.Replace(keyName, renamer);
+                                }
+                            }
+
+                            if (keyValuePairs.ContainsKey(secondPart.Substring(i, 2)))
+                            {
+                                string renamer = keyValuePairs[keyName];
+                                foreach (string s in result)
+                                {
+                                    s.Replace(keyName, renamer);
+                                }
+                            }
+                        }
+                    }
+
+                    if (secondPart.Length > 2 && secondPart.Length % 2 == 1)
+                    {
+                        for (int i = 0; i < secondPart.Length; i++)
+                        {
+                            keyValuePairs.Add(keyName, secondPart.Substring(i, 1));
+                        }
+                    }
+
+
+                }
+
+            }
+
+            return result;
         }
 
         private void PrintForm(List<string> grammar)
