@@ -271,7 +271,6 @@ namespace LFPC_Chomsky
             List<string> additional = new List<string>();
             Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
 
-
             result.AddRange(prod);
 
             foreach (string s in additional)
@@ -293,11 +292,17 @@ namespace LFPC_Chomsky
                     int format = line.Count() + 1;
                     string keyName = "X" + format.ToString();
 
+                    if (keyValuePairs.ContainsKey(keyName) && result.Any(x => x == keyName))
+                    {
+                        keyName = "Y" + format.ToString();
+                    }
+
                     if (secondPart.Length == 2)
                     {
                         if (!keyValuePairs.ContainsKey(secondPart))
                         {
-                            keyValuePairs.Add(keyName, secondPart.Substring(0, 1));
+                            if (!keyValuePairs.ContainsKey(secondPart.Substring(0, 1)))
+                                keyValuePairs.Add(keyName, secondPart.Substring(0, 1));
 
                             string renamer = keyValuePairs[keyName];
 
@@ -307,15 +312,15 @@ namespace LFPC_Chomsky
                             }
                         }
 
-                        if (keyValuePairs.ContainsKey(secondPart))
-                        {
-                            string renamer = keyValuePairs[keyName];
+                        //if (keyValuePairs.ContainsKey(secondPart))
+                        //{
+                        //    string renamer = keyValuePairs[keyName];
 
-                            foreach (string s in result)
-                            {
-                                s.Replace(keyName, renamer);
-                            }
-                        }
+                        //    foreach (string s in result)
+                        //    {
+                        //        s.Replace(keyName, renamer);
+                        //    }
+                        //}
                     }
 
                     if (secondPart.Length > 2 && secondPart.Length % 2 == 0)
@@ -335,14 +340,14 @@ namespace LFPC_Chomsky
                                 }
                             }
 
-                            if (keyValuePairs.ContainsKey(secondPart.Substring(i, 2)))
-                            {
-                                string renamer = keyValuePairs[keyName];
-                                foreach (string s in result)
-                                {
-                                    s.Replace(keyName, renamer);
-                                }
-                            }
+                            //if (keyValuePairs.ContainsKey(secondPart.Substring(i, 2)))
+                            //{
+                            //    string renamer = keyValuePairs[keyName];
+                            //    foreach (string s in result)
+                            //    {
+                            //        s.Replace(keyName, renamer);
+                            //    }
+                            //}
                         }
                     }
 
@@ -350,7 +355,7 @@ namespace LFPC_Chomsky
                     {
                         for (int i = 0; i < secondPart.Length; i++)
                         {
-                            keyValuePairs.Add(keyName, secondPart.Substring(i, 1));
+                            keyValuePairs.Add(keyName, secondPart.Substring(i, 2));
                         }
                     }
 
