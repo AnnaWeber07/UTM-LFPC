@@ -33,19 +33,19 @@ namespace LFPC_Chomsky
             production = GetProduction(grammar);
 
             production2 = EpsilonElimination(production);
-            //PrintForm(production2);
+            PrintForm(production2);
 
             production3 = RenamingElimination(production2);
-            //            PrintForm(production3);
+            PrintForm(production3);
 
             production4 = InaccessibleSymbolElimination(production3);
-            //          PrintForm(production4);
+            PrintForm(production4);
 
             production5 = NonProductiveSymbolElimination(production4);
-            //        PrintForm(production5);
+            PrintForm(production5);
 
             production6 = GetChomskyNormalForm(production5);
-            //      PrintForm(production6);
+            PrintForm(production6);
         }
 
 
@@ -268,16 +268,10 @@ namespace LFPC_Chomsky
         // Obtain the Chomsky Normal Form S=>AB or S=>a
         {
             List<string> result = new List<string>();
-            List<string> additional = new List<string>();
             Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
 
             result.AddRange(prod);
 
-            foreach (string s in additional)
-            {
-                string secondPartLine = s.Substring(3);
-                additional.Add(secondPartLine);
-            }
 
             foreach (string line in prod)
             {
@@ -289,12 +283,12 @@ namespace LFPC_Chomsky
 
                 if (!firstCondition && !secondCondition)
                 {
-                    int format = line.Count() + 1;
-                    string keyName = "X" + format.ToString();
+                    char letter = GetLetter();
+                    string keyName = letter.ToString();
 
-                    if (keyValuePairs.ContainsKey(keyName) && result.Any(x => x == keyName))
+                    if (keyValuePairs.ContainsKey(keyName))
                     {
-                        keyName = "Y" + format.ToString();
+                        keyName = GetLetter().ToString();
                     }
 
                     if (secondPart.Length == 2)
@@ -302,13 +296,15 @@ namespace LFPC_Chomsky
                         if (!keyValuePairs.ContainsKey(secondPart))
                         {
                             if (!keyValuePairs.ContainsKey(secondPart.Substring(0, 1)))
-                                keyValuePairs.Add(keyName, secondPart.Substring(0, 1));
-
-                            string renamer = keyValuePairs[keyName];
-
-                            foreach (string s in result)
                             {
-                                s.Replace(keyName, renamer);
+                                keyValuePairs.Add(keyName, secondPart.Substring(0, 1));
+                            }
+
+                            string renamer = keyValuePairs[keyName].ToString();
+
+                            for (int j = 0; j < result.Count; j++)
+                            {
+                                result[j].Replace(renamer, keyName);
                             }
                         }
 
@@ -365,6 +361,15 @@ namespace LFPC_Chomsky
             }
 
             return result;
+        }
+
+        private static char GetLetter()
+        {
+            string chars = $"LMNOPQRTUVXYWZ";
+            Random rand = new Random();
+            int num = rand.Next(0, chars.Length);
+
+            return chars[num];
         }
 
         private void PrintForm(List<string> grammar)
