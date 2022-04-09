@@ -235,7 +235,7 @@ namespace LFPC_Chomsky
 
             result.AddRange(prod);
 
-            foreach (string s in NonTerminal)
+            foreach (string s in NonTerminal) //terminal
             {
                 foreach (string line in prod)
                 {
@@ -297,6 +297,8 @@ namespace LFPC_Chomsky
                 bool firstCondition = (checkSymbol.Length == 1) && checkSymbol.All(x => Char.IsLower(x));
                 bool secondCondition = (checkSymbol.Length == 2) && checkSymbol.All(x => Char.IsUpper(x));
 
+
+
                 if (!firstCondition && !secondCondition)
                 {
                     char letter = GetLetter();
@@ -312,11 +314,11 @@ namespace LFPC_Chomsky
                         }
                     }
 
-                    if (secondPart.Length == 2)
+                    if (secondPart.Length == 2 && prod.IndexOf(line) < 5)
                     {
                         if (!keyValuePairs.ContainsKey(secondPart))
                         {
-                            if (!keyValuePairs.ContainsKey(secondPart.Substring(0, 1)))
+                            if (!keyValuePairs.ContainsKey(secondPart.Substring(0, 1)) || !keyValuePairs.ContainsValue(keyName))
                             {
                                 keyValuePairs.Add(keyName, secondPart.Substring(0, 1));
                             }
@@ -349,26 +351,28 @@ namespace LFPC_Chomsky
                     //}
 
 
-                    //if (secondPart.Length > 2 && secondPart.Length % 2 == 0)
-                    //{
-                    //    for (int i = 0; i < secondPart.Length; i += 2)
-                    //    {
-                    //        if (!keyValuePairs.ContainsKey(secondPart.Substring(i, 2)))
-                    //        {
-                    //            keyValuePairs.Add(keyName, secondPart.Substring(i, 2));
-                    //        }
+                    if (secondPart.Length > 2 && secondPart.Length % 2 == 0)
+                    {
+                        for (int i = 0; i < secondPart.Length; i += 2)
+                        {
+                            if (!keyValuePairs.ContainsKey(secondPart.Substring(i, 2)))
+                            {
+                                keyValuePairs.Add(keyName, secondPart.Substring(i, 2));
+                            }
 
-                    //        string renamer = keyValuePairs[keyName].ToString();
-                    //        line.Replace(keyName, renamer);
+                            string renamer = keyValuePairs[keyName].ToString();
+                            line.Replace(keyName, renamer);
 
-                    //        for (int j = 0; j < toBeRenamed.Count; j++)
-                    //        {
-                    //            if (toBeRenamed[j].Contains(keyName))
-                    //            {
-                    //                ///
-                    //            }
+                            for (int j = 0; j < toBeRenamed.Count; j++)
+                            {
+                                if (toBeRenamed[j].Contains(keyName))
+                                {
+                                    ///
+                                }
 
-                    //        }
+                            }
+                        }
+                    }
 
                     //if (keyValuePairs.ContainsKey(secondPart.Substring(i, 2)))
                     //{
@@ -379,28 +383,28 @@ namespace LFPC_Chomsky
                     //    }
                     //}
 
-                    //if (secondPart.Length > 2 && secondPart.Length % 2 == 1)
-                    //{
-                    //    for (int i = 0; i < secondPart.Length; i++)
-                    //    {
-                    //        if (!keyValuePairs2.ContainsKey(secondPart.Substring(i, 2)))
-                    //        {
-                    //            keyValuePairs2.Add(keyName, secondPart.Substring(i, 2));
-                    //        }
+                    if (secondPart.Length > 2 && secondPart.Length % 2 == 1)
+                    {
+                        for (int i = 0; i < secondPart.Length; i++)
+                        {
+                            if (!keyValuePairs.ContainsKey(secondPart.Substring(i, 2)) && !keyValuePairs.ContainsValue(keyName))
+                            {
+                                keyValuePairs.Add(keyName, secondPart.Substring(i, 2));
+                            }
 
-                    //        string renamer = keyValuePairs[keyName].ToString();
-                    //        line.Replace(keyName, renamer);
+                            string renamer = keyValuePairs[keyName].ToString();
+                            line.Replace(keyName, renamer);
 
-                    //        for (int j = 0; j < toBeRenamed.Count; j++)
-                    //        {
-                    //            if (toBeRenamed[j].Contains(renamer) && toBeRenamed[j].Substring(3).Length > 2)
-                    //            {
-                    //                string adder = toBeRenamed[j].Replace(renamer, keyName);
-                    //                result.Add(adder);
-                    //            }
-                    //        }
-                    //    }
-                    //}
+                            for (int j = 0; j < toBeRenamed.Count; j++)
+                            {
+                                if (toBeRenamed[j].Contains(renamer) && toBeRenamed[j].Substring(3).Length > 2)
+                                {
+                                    string adder = toBeRenamed[j].Replace(renamer, keyName);
+                                    result.Add(adder);
+                                }
+                            }
+                        }
+                    }
 
 
                 }
