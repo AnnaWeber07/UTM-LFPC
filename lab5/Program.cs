@@ -1,30 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SimplePrecedenceParser
+namespace CoreParser
 {
     class Program
     {
+        //SIMPLE PRECEDENCE PARSER VAR 9
         static void Main(string[] args)
         {
-            //CHIRICIUC ANNA VAR 9
-            //SIMPLE PRECEDENCE PARSER
-            //STIRNG TO ANALYZE: abacdae
+            var path = @"C:\Users\Анна\source\repos\CoreParser\CoreParser\TextFile1.txt";
+            var grammar = new Grammar(path, "S");
 
-            string toAnalyze = "abacdae";
+            Console.WriteLine("Initial grammar: ");
+            Console.WriteLine(grammar);
 
-            string path = @"C:\Users\Анна\source\repos\SimplePrecedenceParser\SimplePrecedenceParser\TextFile1.txt";
+            Console.WriteLine();
 
-            string[] text = File.ReadAllLines(path);
-            List<string> initialGrammar = text.ToList();
+            var firstLastTable = new RelationsTable(grammar);
+            Console.WriteLine("First Last table: ");
 
-            Parser parser = new Parser(initialGrammar);
+            Console.WriteLine(firstLastTable);
 
+            var precedenceMatrix = new PrecedenceMatrix(firstLastTable, grammar);
+            Console.WriteLine("Rules and Precedence matrix: ");
 
+            Console.WriteLine(precedenceMatrix);
+
+            Console.WriteLine("Parsing: ");
+            var parser = new Parser(grammar, precedenceMatrix.M);
         }
     }
 }

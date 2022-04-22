@@ -1,12 +1,10 @@
-﻿G={Vn, Vt, P, S}
-Vn={S, A, B, C, D}
-Vt={a, b, c, d, e}
-P={
-S=>C
-C=>BcA
-A=>b
-A=>dD
-D=>Be
-B=>a
-B=>Bba
-}
+﻿S A B C D
+a b c d e
+abacdae
+S->C
+C->BcA
+A->b
+A->dD
+D->Be
+B->a
+B->Bba
